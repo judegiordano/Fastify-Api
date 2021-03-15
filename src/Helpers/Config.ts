@@ -11,7 +11,7 @@ const config = {
 	HOST: <Host>(process.env.NODE_ENV == Env.prod ? process.env.HOST : Host.ip),
 	JWT_SECRET: <string>process.env.JWT_SECRET || undefined,
 	JWT_REFRESH_SECRET: <string>process.env.JWT_REFRESH_SECRET || undefined,
-	JWT_EXPIRATION: <string | number>(60 * 1),
+	JWT_EXPIRATION: <string | number>(60 * 1 * 60 * 24 * 7),
 	NODE_ENV: <Env>process.env.NODE_ENV || Env.dev,
 	DB_TYPE: <string>process.env.DB_TYPE || undefined,
 	DB_NAME: <string>process.env.DB_NAME || undefined,

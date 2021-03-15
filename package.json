@@ -9,7 +9,7 @@
     "postinstall": "npm run build",
     "build": "tsc",
     "start": "npm run build && node .",
-	"loadbalance": "loadtest http://127.0.0.1:3000/api/v1/utility/random?length=12 -t 30 -c 100 --rps 1000",
+    "loadbalance": "loadtest http://127.0.0.1:3000/api/v1/utility/random?length=12 -t 60 -c 32 --rps 500000",
     "dev": "npm run build && ts-node ./src/index.ts",
     "watch": "tsc --watch"
   },
@@ -25,6 +25,7 @@
     "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.21.0",
     "loadtest": "^5.1.2",
+    "typeorm-model-generator": "^0.4.5",
     "typescript": "^4.2.3"
   },
   "dependencies": {
