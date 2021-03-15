@@ -1,4 +1,21 @@
+## Running
+```
+npm i
+npm run start
+```
 
+## Environment Variables
+```sh
+NODE_ENV='production' | 'development'
+DB_TYPE='sqlite'
+DB_NAME='database.sqlite'
+HOST='127.0.0.1'
+VERSION='v1'
+JWT_SECRET='secret string'
+JWT_REFRESH_SECRET='secret string'
+APP_RESTRICTION='secret string'
+```
+## Fastify Schemas
 ```js
 const bodyJsonSchema = {
   type: 'object',
