@@ -9,6 +9,7 @@
     "postinstall": "npm run build",
     "build": "tsc",
     "start": "npm run build && node .",
+	"loadbalance": "loadtest http://127.0.0.1:3000/api/v1/utility/random?length=12 -t 30 -c 100 --rps 1000",
     "dev": "npm run build && ts-node ./src/index.ts",
     "watch": "tsc --watch"
   },
@@ -23,6 +24,7 @@
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.21.0",
+    "loadtest": "^5.1.2",
     "typescript": "^4.2.3"
   },
   "dependencies": {
