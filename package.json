@@ -5,6 +5,7 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
+	"migrations:generate": "ts-node ./node_modules/typeorm/cli.js migration:generate -n",
     "migrations:create": "ts-node ./node_modules/typeorm/cli.js migration:create -n",
     "migrations:down": "ts-node ./node_modules/typeorm/cli.js migration:revert",
     "migrations:up": "ts-node ./node_modules/typeorm/cli.js migration:run",
