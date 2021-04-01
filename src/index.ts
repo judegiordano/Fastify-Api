@@ -3,7 +3,6 @@ import cluster from "cluster";
 
 import config from "./Helpers/Config";
 import fastify from "./Services/Server";
-
 import log from "./Services/Log";
 import connect from "./Services/Database";
 

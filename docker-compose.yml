@@ -1,13 +1,12 @@
 version: "3.7"
 services:
-  sql-server-db:
-    container_name: sql-server-db
+  sql-server-db-fastify-api:
+    container_name: sql-server-db-fastify-api
     image: mcr.microsoft.com/mssql/server:2019-latest
     ports:
       - "1433:1433"
     environment:
-      SA_PASSWORD: "password"
+      SA_PASSWORD: ${DB_PASSWORD}
       ACCEPT_EULA: "Y"
 
-# note, this container construction may fail
-# if password is not strong enough
+# username sa

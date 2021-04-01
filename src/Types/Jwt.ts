@@ -1,9 +1,7 @@
-
 export interface IJwtPayload {
 	id: number,
-	created: Date,
-	username: string,
-	email: string,
+	tokenVersion: number
+	email?: string,
 	iat?: number,
 	exp?: number
 }

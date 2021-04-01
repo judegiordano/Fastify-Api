@@ -1,12 +1,10 @@
-import bcrypt from "bcrypt";
+import argon from "argon2";
 
 export default class Password {
 
 	public static async Hash(string: string): Promise<string> {
 		try {
-			const salt: string = await bcrypt.genSalt(12);
-			const hash: string = await bcrypt.hash(string, salt);
-			return hash;
+			return await argon.hash(string);
 		} catch (e) {
 			throw Error(e);
 		}
@@ -14,8 +12,7 @@ export default class Password {
 
 	public static async Compare(pass: string, hash: string): Promise<boolean> {
 		try {
-			const valid: boolean = await bcrypt.compare(pass, hash);
-			return valid;
+			return await argon.verify(hash, pass);
 		} catch (e) {
 			throw Error(e);
 		}

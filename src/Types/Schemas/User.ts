@@ -13,6 +13,9 @@ export const UserSchema = {
 		email: {
 			type: "string"
 		},
+		tokenVersion: {
+			type: "number"
+		},
 		created: {
 			type: "string"
 		},

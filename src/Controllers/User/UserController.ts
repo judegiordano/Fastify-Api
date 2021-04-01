@@ -3,6 +3,7 @@ import { FastifyInstance } from "fastify";
 import User from "../../Repositories/UserRepository";
 import { ILogin, IRegister } from "../../Types/Abstract";
 import Jwt from "../../Helpers/Jwt";
+import config from "../../Helpers/Config";
 
 const registerSchema = {
 	body: {
@@ -60,12 +61,6 @@ const validateSchema = {
 						id: {
 							type: "number"
 						},
-						username: {
-							type: "string"
-						},
-						email: {
-							type: "string"
-						},
 						iat: {
 							type: "number"
 						},
@@ -115,6 +110,30 @@ const loginSchema = {
 	}
 };
 
+const refreshSchema = {
+	response: {
+		200: {
+			type: "object",
+			properties: {
+				ok: {
+					type: "boolean"
+				},
+				status: {
+					type: "number"
+				},
+				data: {
+					type: "object",
+					properties: {
+						token: {
+							type: "string"
+						}
+					}
+				}
+			}
+		},
+	}
+};
+
 interface IRegisterAssert {
 	Body: IRegister
 }
@@ -130,17 +149,18 @@ export default (async (fastify: FastifyInstance): Promise<void> => {
 	}, async (request, response) => {
 		try {
 			const user = await User.Register(request.body);
+
+			response.setCookie("jid", Jwt.SignRefresh(user), {
+				httpOnly: true,
+				signed: false,
+				secure: config.IS_PROD,
+				path: "/"
+			});
+
 			return {
 				ok: true,
 				status: response.statusCode,
-				data: {
-					token: await Jwt.Sign({
-						id: user.id,
-						username: user.username,
-						email: user.email,
-						created: user.created
-					})
-				}
+				data: { token: Jwt.Sign(user) }
 			};
 		} catch (error) {
 			throw new Error(error);
@@ -152,17 +172,18 @@ export default (async (fastify: FastifyInstance): Promise<void> => {
 	}, async (request, response) => {
 		try {
 			const user = await User.Login(request.body);
+
+			response.setCookie("jid", Jwt.SignRefresh(user), {
+				httpOnly: true,
+				signed: false,
+				secure: config.IS_PROD,
+				path: "/"
+			});
+
 			return {
 				ok: true,
 				status: response.statusCode,
-				data: {
-					token: await Jwt.Sign({
-						id: user.id,
-						username: user.username,
-						email: user.email,
-						created: user.created
-					})
-				}
+				data: { token: Jwt.Sign(user) }
 			};
 		} catch (error) {
 			throw new Error(error);
@@ -178,6 +199,37 @@ export default (async (fastify: FastifyInstance): Promise<void> => {
 				ok: true,
 				status: response.statusCode,
 				data: request.jwt
+			};
+		} catch (error) {
+			throw new Error(error);
+		}
+	});
+
+	fastify.post("/user/refresh", {
+		schema: refreshSchema
+	}, async (request, response) => {
+		try {
+			const token = request.cookies.jid as string;
+			if (!token) throw "unathorized";
+
+			const payload = Jwt.VerifyRefresh(token);
+			const user = await User.GetUser(payload.id);
+
+			if (user.tokenVersion !== payload.tokenVersion) {
+				throw "invalid token";
+			}
+
+			response.setCookie("jid", Jwt.SignRefresh(user), {
+				httpOnly: true,
+				signed: false,
+				secure: config.IS_PROD,
+				path: "/"
+			});
+
+			return {
+				ok: true,
+				status: response.statusCode,
+				data: { token: Jwt.Sign(user) }
 			};
 		} catch (error) {
 			throw new Error(error);

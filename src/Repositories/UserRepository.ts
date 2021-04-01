@@ -13,8 +13,6 @@ export default class UserRepository {
 			const newUser: User = new User();
 			newUser.username = req.username;
 			newUser.email = req.email;
-			newUser.created = new Date();
-			newUser.lastUpdated = new Date();
 			newUser.password = await Password.Hash(req.password);
 
 			return await newUser.save();
@@ -37,9 +35,22 @@ export default class UserRepository {
 		}
 	}
 
+	public static async Increment(id: number): Promise<boolean> {
+		try {
+			const exists: User = await User.findOne({ id });
+			if (!exists) throw "user not found";
+
+			exists.tokenVersion += 1;
+			exists.save();
+			return true;
+		} catch (error) {
+			throw Error(error);
+		}
+	}
+
 	public static async DeleteUser(id: number): Promise<User> {
 		try {
-			const exists: User = await User.findOne({ id: id });
+			const exists: User = await User.findOne({ id });
 			if (!exists) throw "user not found";
 
 			return await User.remove(exists);
@@ -50,7 +61,7 @@ export default class UserRepository {
 
 	public static async GetUser(id: number): Promise<User> {
 		try {
-			const exists: User = await User.findOne({ id: id });
+			const exists: User = await User.findOne({ id });
 			if (!exists) throw "user not found";
 
 			return exists;

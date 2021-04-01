@@ -2,6 +2,7 @@
 import path from "path";
 import { cwd } from "process";
 import cors from "fastify-cors";
+import cookies from "fastify-cookie";
 import swagger from "fastify-swagger";
 import rateLimit from "fastify-rate-limit";
 import helmet from "fastify-helmet";
@@ -47,12 +48,13 @@ server.register((helmet), {
 
 server.decorate("validate", async (request: FastifyRequest, reply: FastifyReply) => {
 	try {
+		if (!request.headers.authorization) throw new Error("unauthorized");
 		const token = request.headers.authorization.split(" ")[1];
 		if (!token) {
 			reply.statusCode = 401;
 			throw new Error("not authorized");
 		}
-		request.jwt = await Jwt.Verify(token);
+		request.jwt = Jwt.Verify(token);
 	} catch (err) {
 		reply.send(err);
 	}
@@ -76,6 +78,10 @@ server.register(rateLimit, {
 	keyGenerator: (req: FastifyRequest) => {
 		return (req.headers["x-real-ip"] as string) || (req.headers["x-client-ip"] as string) || req.ip;
 	}
+});
+
+server.register(cookies, {
+	secret: config.COOKIE_SECRET
 });
 
 server.register(swagger, {
