@@ -11,7 +11,7 @@ module.exports = {
 	reconnectTries: Number.MAX_VALUE,
 	reconnectInterval: 2000,
 	entities: ["build/Models/**/*.js"],
-	migrations: ["build/Migrations/**/*.js"],
+	migrations: ["src/Migrations/**/*.ts"],
 	cli: {
 		entitiesDir: "build/Models",
 		migrationsDir: "src/Migrations",

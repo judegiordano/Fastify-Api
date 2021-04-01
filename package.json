@@ -5,10 +5,13 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
-    "prebuild": "eslint --fix --ext .ts,.tsx .",
-    "postinstall": "npm run build",
+    "migrations:create": "ts-node ./node_modules/typeorm/cli.js migration:create -n",
+    "migrations:down": "ts-node ./node_modules/typeorm/cli.js migration:revert",
+    "migrations:up": "ts-node ./node_modules/typeorm/cli.js migration:run",
+	"lint": "eslint --fix --ext .ts,.tsx .",
     "build": "tsc",
-    "start": "npm run build && node .",
+    "prestart": "npm run lint && npm run build",
+    "start": "node .",
     "loadbalance": "loadtest http://127.0.0.1:3000/api/v1/utility/random?length=12 -t 60 -c 32 --rps 500000",
     "dev": "npm run build && ts-node ./src/index.ts",
     "watch": "tsc --watch"
@@ -25,6 +28,7 @@
     "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.21.0",
     "loadtest": "^5.1.2",
+    "ts-node": "^9.1.1",
     "typeorm-model-generator": "^0.4.5",
     "typescript": "^4.2.3"
   },
