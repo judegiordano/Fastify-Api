@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { FastifyReply } from "fastify";
 
 import config from "./Config";
 import { IJwtPayload } from "../Types/Jwt";
@@ -44,6 +45,19 @@ export default class Jwt {
 		try {
 			const data = jwt.verify(token, config.JWT_REFRESH_SECRET) as IJwtPayload;
 			return { id: data.id, tokenVersion: data.tokenVersion };
+		} catch (error) {
+			throw Error(error);
+		}
+	}
+
+	public static SetRefreshCookie(response: FastifyReply, user: User): FastifyReply {
+		try {
+			return response.setCookie("jid", Jwt.SignRefresh(user), {
+				httpOnly: true,
+				signed: false,
+				secure: config.IS_PROD,
+				path: "/"
+			});
 		} catch (error) {
 			throw Error(error);
 		}

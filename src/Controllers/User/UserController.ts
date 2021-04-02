@@ -3,7 +3,6 @@ import { FastifyInstance } from "fastify";
 import User from "../../Repositories/UserRepository";
 import { ILogin, IRegister } from "../../Types/Abstract";
 import Jwt from "../../Helpers/Jwt";
-import config from "../../Helpers/Config";
 
 const registerSchema = {
 	body: {
@@ -150,12 +149,7 @@ export default (async (fastify: FastifyInstance): Promise<void> => {
 		try {
 			const user = await User.Register(request.body);
 
-			response.setCookie("jid", Jwt.SignRefresh(user), {
-				httpOnly: true,
-				signed: false,
-				secure: config.IS_PROD,
-				path: "/"
-			});
+			Jwt.SetRefreshCookie(response, user);
 
 			return {
 				ok: true,
@@ -173,12 +167,7 @@ export default (async (fastify: FastifyInstance): Promise<void> => {
 		try {
 			const user = await User.Login(request.body);
 
-			response.setCookie("jid", Jwt.SignRefresh(user), {
-				httpOnly: true,
-				signed: false,
-				secure: config.IS_PROD,
-				path: "/"
-			});
+			Jwt.SetRefreshCookie(response, user);
 
 			return {
 				ok: true,
@@ -219,12 +208,7 @@ export default (async (fastify: FastifyInstance): Promise<void> => {
 				throw "invalid token";
 			}
 
-			response.setCookie("jid", Jwt.SignRefresh(user), {
-				httpOnly: true,
-				signed: false,
-				secure: config.IS_PROD,
-				path: "/"
-			});
+			Jwt.SetRefreshCookie(response, user);
 
 			return {
 				ok: true,
