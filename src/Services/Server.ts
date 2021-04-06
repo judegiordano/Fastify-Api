@@ -48,15 +48,15 @@ server.register((helmet), {
 
 server.decorate("validate", async (request: FastifyRequest, reply: FastifyReply) => {
 	try {
-		if (!request.headers.authorization) throw new Error("unauthorized");
+		if (!request.headers.authorization) throw "unauthorized";
 		const token = request.headers.authorization.split(" ")[1];
 		if (!token) {
 			reply.statusCode = 401;
-			throw new Error("not authorized");
+			throw "not authorized";
 		}
 		request.jwt = Jwt.Verify(token);
 	} catch (err) {
-		reply.send(err);
+		throw new Error(err);
 	}
 });
 
@@ -64,10 +64,10 @@ server.decorate("restriction", async (request: FastifyRequest, reply: FastifyRep
 	try {
 		if (request.headers.apprestriction !== config.APP_RESTRICTION) {
 			reply.statusCode = 401;
-			throw new Error("not authorized");
+			throw "not authorized";
 		}
 	} catch (err) {
-		reply.send(err);
+		throw new Error(err);
 	}
 });
 

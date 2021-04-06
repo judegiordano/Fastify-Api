@@ -1,3 +1,5 @@
+import fs from "fs";
+
 export default class Utility {
 
 	private static chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
@@ -40,6 +42,14 @@ export default class Utility {
 				uid = uid.substr(0, len);
 			}
 			return uid;
+		} catch (error) {
+			throw new Error(error);
+		}
+	}
+
+	public static EncodeBase64(file: number | fs.PathLike): string {
+		try {
+			return fs.readFileSync(file, "base64");
 		} catch (error) {
 			throw new Error(error);
 		}

@@ -1,7 +1,11 @@
-import { User } from "../Models/User";
+import path from "path";
+import { cwd } from "process";
 
+import { User } from "../Models/User";
+import { Profile } from "../Models/Profile";
 import Password from "../Helpers/Password";
 import { ILogin, IRegister } from "../Types/Abstract";
+import Utility from "../Helpers/Utility";
 
 export default class UserRepository {
 
@@ -10,10 +14,15 @@ export default class UserRepository {
 			const exists: User = await User.findOne({ where: [{ username: req.username }, { email: req.email }] });
 			if (exists) throw "username / email taken";
 
+			const profile = new Profile();
+			profile.photo = Utility.EncodeBase64(path.join(cwd(), "static/default_profile.png"));
+			await profile.save();
+
 			const newUser: User = new User();
 			newUser.username = req.username;
 			newUser.email = req.email;
 			newUser.password = await Password.Hash(req.password);
+			newUser.profile = profile;
 
 			return await newUser.save();
 		} catch (error) {
@@ -61,7 +70,7 @@ export default class UserRepository {
 
 	public static async GetUser(id: number): Promise<User> {
 		try {
-			const exists: User = await User.findOne({ id });
+			const exists = await User.findOne({ where: { id }, relations: ["profile"] }) as User;
 			if (!exists) throw "user not found";
 
 			return exists;

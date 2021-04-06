@@ -10,10 +10,10 @@ module.exports = {
 	autoReconnect: true,
 	reconnectTries: Number.MAX_VALUE,
 	reconnectInterval: 2000,
-	entities: ["build/Models/**/*.js"],
-	migrations: ["src/Migrations/**/*.js"],
+	entities: ["src/Models/**/*.ts"],
+	migrations: ["src/Migrations/**/*.ts"],
 	cli: {
-		entitiesDir: "build/Models",
+		entitiesDir: "src/Entities",
 		migrationsDir: "src/Migrations",
 	}
 };

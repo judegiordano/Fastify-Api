@@ -8,6 +8,7 @@
 			"skipFiles": [
 				"<node_internals>/**"
 			],
+			"outputCapture": "std",
 			"program": "${workspaceFolder}\\build\\index.js",
 			"preLaunchTask": "tsc: compile",
 			"outFiles": [
@@ -24,6 +25,7 @@
 			"skipFiles": [
 				"<node_internals>/**"
 			],
+			"outputCapture": "std",
 			"program": "${workspaceFolder}\\build\\index.js",
 			"preLaunchTask": "tsc: compile",
 			"outFiles": [
