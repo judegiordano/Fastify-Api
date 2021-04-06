@@ -6,6 +6,7 @@ import cookies from "fastify-cookie";
 import swagger from "fastify-swagger";
 import rateLimit from "fastify-rate-limit";
 import helmet from "fastify-helmet";
+import multiPart from "fastify-multipart";
 import Fastify, { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { Server, IncomingMessage, ServerResponse } from "http";
 
@@ -48,7 +49,10 @@ server.register((helmet), {
 
 server.decorate("validate", async (request: FastifyRequest, reply: FastifyReply) => {
 	try {
-		if (!request.headers.authorization) throw "unauthorized";
+		if (!request.headers.authorization) {
+			reply.statusCode = 401;
+			throw "not authorized";
+		}
 		const token = request.headers.authorization.split(" ")[1];
 		if (!token) {
 			reply.statusCode = 401;
@@ -77,6 +81,17 @@ server.register(rateLimit, {
 	whitelist: ["127.0.0.1"],
 	keyGenerator: (req: FastifyRequest) => {
 		return (req.headers["x-real-ip"] as string) || (req.headers["x-client-ip"] as string) || req.ip;
+	}
+});
+
+server.register(multiPart, {
+	limits: {
+		fieldNameSize: 100,
+		fieldSize: 1000000,
+		fields: 10,
+		// fileSize: 100,
+		files: 1,
+		headerPairs: 2000
 	}
 });
 

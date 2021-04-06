@@ -54,4 +54,12 @@ export default class Utility {
 			throw new Error(error);
 		}
 	}
+
+	public static BufferToBase64(buffer: Buffer): string {
+		try {
+			return Buffer.from(buffer).toString("base64");
+		} catch (error) {
+			throw new Error(error);
+		}
+	}
 }

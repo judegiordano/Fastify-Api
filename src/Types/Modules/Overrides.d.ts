@@ -15,5 +15,6 @@ declare module "fastify" {
 	}
 	export interface FastifyRequest {
 		jwt: IJwtPayload;
+		file: unknown[];
 	}
 }
