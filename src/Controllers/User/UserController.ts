@@ -3,135 +3,7 @@ import { FastifyInstance } from "fastify";
 import User from "../../Repositories/UserRepository";
 import { ILogin, IRegister } from "../../Types/Abstract";
 import Jwt from "../../Helpers/Jwt";
-
-const registerSchema = {
-	body: {
-		type: "object",
-		required: ["username", "email", "password"],
-		properties: {
-			username: {
-				type: "string"
-			},
-			email: {
-				type: "string"
-			},
-			password: {
-				type: "string"
-			}
-		}
-	},
-	response: {
-		200: {
-			type: "object",
-			properties: {
-				ok: {
-					type: "boolean"
-				},
-				status: {
-					type: "number"
-				},
-				data: {
-					type: "object",
-					properties: {
-						token: {
-							type: "string"
-						}
-					}
-				}
-			}
-		},
-	}
-};
-
-const validateSchema = {
-	response: {
-		200: {
-			type: "object",
-			properties: {
-				ok: {
-					type: "boolean"
-				},
-				status: {
-					type: "number"
-				},
-				data: {
-					type: "object",
-					properties: {
-						id: {
-							type: "number"
-						},
-						iat: {
-							type: "number"
-						},
-						exp: {
-							type: "number"
-						}
-					}
-				}
-			}
-		},
-	}
-};
-
-const loginSchema = {
-	body: {
-		type: "object",
-		required: ["username", "password"],
-		properties: {
-			username: {
-				type: "string"
-			},
-			password: {
-				type: "string"
-			}
-		}
-	},
-	response: {
-		200: {
-			type: "object",
-			properties: {
-				ok: {
-					type: "boolean"
-				},
-				status: {
-					type: "number"
-				},
-				data: {
-					type: "object",
-					properties: {
-						token: {
-							type: "string"
-						}
-					}
-				}
-			}
-		},
-	}
-};
-
-const refreshSchema = {
-	response: {
-		200: {
-			type: "object",
-			properties: {
-				ok: {
-					type: "boolean"
-				},
-				status: {
-					type: "number"
-				},
-				data: {
-					type: "object",
-					properties: {
-						token: {
-							type: "string"
-						}
-					}
-				}
-			}
-		},
-	}
-};
+import * as Schemas from "../../Types/Schemas/User";
 
 interface IRegisterAssert {
 	Body: IRegister
@@ -144,7 +16,7 @@ interface ILoginAssert {
 export default (async (fastify: FastifyInstance): Promise<void> => {
 
 	fastify.post<IRegisterAssert>("/user/register", {
-		schema: registerSchema
+		schema: Schemas.registerSchema
 	}, async (request, response) => {
 		try {
 			const user = await User.Register(request.body);
@@ -162,7 +34,7 @@ export default (async (fastify: FastifyInstance): Promise<void> => {
 	});
 
 	fastify.post<ILoginAssert>("/user/login", {
-		schema: loginSchema
+		schema: Schemas.loginSchema
 	}, async (request, response) => {
 		try {
 			const user = await User.Login(request.body);
@@ -181,7 +53,7 @@ export default (async (fastify: FastifyInstance): Promise<void> => {
 
 	fastify.post("/user/validate", {
 		preValidation: [fastify.validate],
-		schema: validateSchema
+		schema: Schemas.validateSchema
 	}, async (request, response) => {
 		try {
 			return {
@@ -195,7 +67,7 @@ export default (async (fastify: FastifyInstance): Promise<void> => {
 	});
 
 	fastify.post("/user/refresh", {
-		schema: refreshSchema
+		schema: Schemas.refreshSchema
 	}, async (request, response) => {
 		try {
 			const token = request.cookies.jid as string;

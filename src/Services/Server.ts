@@ -111,7 +111,11 @@ server.register(swagger, {
 		schemes: ["http"],
 		consumes: ["application/json"],
 		produces: ["application/json"],
-		tags: []
+		tags: [
+			{ name: "User", description: "User related end-points" },
+			{ name: "Profile", description: "Profile related end-points" },
+			{ name: "Dev", description: "Dev related end-points" },
+		]
 	},
 	exposeRoute: true
 });

@@ -1,39 +1,7 @@
 import { FastifyInstance } from "fastify";
 
 import Profile from "../../Repositories/ProfileRepository";
-
-const getProfileSchema = {
-	required: "id",
-	params: {
-		id: {
-			type: "number",
-		}
-	},
-	response: {
-		200: {
-			type: "string"
-		}
-	}
-};
-
-const updateProfileSchema = {
-	response: {
-		200: {
-			type: "object",
-			properties: {
-				ok: {
-					type: "boolean"
-				},
-				status: {
-					type: "number"
-				},
-				data: {
-					type: "boolean"
-				}
-			}
-		},
-	}
-};
+import * as Schemas from "../../Types/Schemas/Profile";
 
 interface IUserAssert {
 	Params: { id: number }
@@ -42,7 +10,7 @@ interface IUserAssert {
 export default (async (fastify: FastifyInstance): Promise<void> => {
 
 	fastify.get<IUserAssert>("/profile/:id", {
-		schema: getProfileSchema
+		schema: Schemas.getProfileSchema
 	}, async (request, response) => {
 		try {
 			const profile = await Profile.GetProfile(request.params.id);
@@ -54,7 +22,7 @@ export default (async (fastify: FastifyInstance): Promise<void> => {
 	});
 
 	fastify.post("/profile/update", {
-		schema: updateProfileSchema,
+		schema: Schemas.updateProfileSchema,
 		preValidation: [fastify.validate],
 	}, async (request, response) => {
 		try {

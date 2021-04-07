@@ -2,7 +2,7 @@ import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColum
 
 import { Profile } from "./Profile";
 
-@Entity("User", { schema: "dbo" })
+@Entity("User")
 export class User extends BaseEntity {
 
 	@PrimaryGeneratedColumn({ type: "int", name: "id" })
