@@ -50,12 +50,14 @@ export default class Jwt {
 		}
 	}
 
-	public static SetRefreshCookie(response: FastifyReply, user: User): FastifyReply {
+	public static SetRefreshCookie(response: FastifyReply, user: User): void {
 		try {
-			return response.setCookie("jid", Jwt.SignRefresh(user), {
+			response.setCookie("jid", Jwt.SignRefresh(user), {
+				maxAge: 604800000, // 7 days
 				httpOnly: true,
-				signed: false,
+				signed: true,
 				secure: config.IS_PROD,
+				sameSite: true,
 				path: "/"
 			});
 		} catch (error) {

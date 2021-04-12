@@ -20,8 +20,10 @@ const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = Fastify
 });
 
 server.register(cors, {
-	origin: "*",
-	allowedHeaders: ["Authorization"],
+	origin: "http://127.0.0.1:3000",
+	credentials: true,
+	preflightContinue: false,
+	// allowedHeaders: ["Authorization"],
 	exposedHeaders: ["Authorization"]
 });
 
@@ -125,5 +127,13 @@ register(path.join(cwd(), "./build/Controllers/"), async (file: string) => {
 		await server.register(import(file), { prefix: `/api/${config.VERSION}` });
 	}
 });
+
+// server.register(import("fastify-static"), {
+// 	root: path.join(path.join(cwd(), "./views/build"))
+// });
+
+// server.setNotFoundHandler((_, response) => {
+// 	response.sendFile("index.html");
+// });
 
 export default server;
